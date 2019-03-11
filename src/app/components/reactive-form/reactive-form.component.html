@@ -12,7 +12,14 @@
 					class="form-control">
 					<span
 					*ngIf="!signupForm.get('userData.username').valid && signupForm.get('userData.username').touched"
-					class="help-block">Please enter a valid username!</span>
+					class="help-block">
+					<span *ngIf="signupForm.get('userData.username').errors['nameIsForbidden']">
+						This name is invalid
+					</span>
+					<span *ngIf="signupForm.get('userData.username').errors['required']">
+						This name is required
+					</span>
+				</span>
 				</div>
 				<div class="form-group">
 					<label for="email">email</label>
@@ -24,7 +31,17 @@
 				</div>
 				<span
 					*ngIf="!signupForm.get('userData.email').valid && signupForm.get('userData.email').touched"
-					class="help-block">Please enter a valid email!</span>
+					class="help-block">
+					<span *ngIf="signupForm.hasError('mailIsForbidden', 'userData.email')">
+						This mail is forbidden.
+					</span>
+					<span *ngIf="signupForm.hasError('email', 'userData.email')">
+						Invalid mail structure
+					</span>
+					<span *ngIf="signupForm.hasError('required', 'userData.email')">
+						Mail required
+					</span>
+				</span>
 			</div>
 		  	<div class="radio" *ngFor="let gender of genders">
 				<label>
@@ -33,9 +50,19 @@
 					formControlName="gender"
 					[value]="gender">{{ gender }}
 				</label>
-		  	</div>
-			<button class="btn btn-primary" type="submit">Submit</button>
-		  	<span
+			  </div>
+			  <div formArrayName="hobbies">
+					<h4>Your hobbies</h4>
+					<button class="btn btn-default" type="button" (click)="addHobby()">Add hobby</button>
+					<div class="form-group"
+						*ngFor="let hobbyControl of hobbiesControls; let i = index" >
+						<input type="text" class="form-control" [formControlName]="i">
+					</div>
+			  </div>
+
+			  <button [disabled]="!signupForm.valid" class="btn btn-primary" type="submit">Submit</button>
+
+			<span
 				*ngIf="!signupForm.valid && signupForm.touched"
 				class="help-block">Please enter a valid data!</span>
 		</form>
